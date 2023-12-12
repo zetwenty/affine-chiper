@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affine Chiper</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* Aturan gaya CSS yang diperbarui */
+        .operation-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px 10px;
+            margin: 5px;
+        }
+
+        .operation-btn.active {
+            background-color: #b7f4ff;
+            color: rgb(3, 3, 3); 
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+    <div id="kiri" class="container">
+        <h1><center>Affine Chiper</h1></h1>
+        <form action="" id="pure-form">
+            <div class="form-container">
+                <section id="plain-sect">
+                    <label for="plaintext"><h3 class="input-label">Plaintext / Ciphertext</h3></label>
+                    <input type="text" class="inputbox" name="plaintext" id="plaintext"
+                        placeholder="P/C">
+                </section>
+                <section id="operation-sect">
+                    <div id="operation-btns">
+                        <button type="button" class="operation-btn" value="encrypt" onclick="setOperation('encrypt')">Enkripsi</button>
+                        <button type="button" class="operation-btn" value="decrypt" onclick="setOperation('decrypt')">Dekripsi</button>
+                    </div>
+                </section>
+                <section id="a-sect">
+                    <label for="a"><h3 class="input-label">K.a</h3></label>
+                    <input type="number" class="inputbox" name="a" id="a" placeholder="Key a">
+                </section>
+                <section id="b-sect">
+                    <label for="b"><h3 class="input-label">K.b</h3></label>
+                    <input type="number" class="inputbox" name="b" id="b" placeholder="Key b">
+                </section>
+            </div>
+            <button id="affine-btn" type="button" onclick="performAffine()"><b>Submit</b></button>
+        </form>
+    </div>
+
+    <div id="kanan" class="container">
+        <h1>Result</h1>
+        <h2 id="txt"></h2>
+        <h2><b id="operasi-txt"></b></h2>
+        <h2><b id="hasil"></b></h2>
+    </div>
+    
+    <script src="calculator.js"></script>
+    <script>
+        var operationButtons = document.querySelectorAll('.operation-btn');
+        var selectedOperation = "encrypt"; // Default operation is encrypt
+
+        function setOperation(operation) {
+            selectedOperation = operation;
+            highlightSelectedButton();
+        }
+
+        function highlightSelectedButton() {
+            operationButtons.forEach(function (btn) {
+                if (btn.value === selectedOperation) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        async function performAffine() {
+            var plaintext = document.getElementById('plaintext').value;
+            var a = parseInt(document.getElementById('a').value);
+            var b = parseInt(document.getElementById('b').value);
+
+            try {
+                var result;
+                if (selectedOperation === 'encrypt') {
+                    result = await encryptWord(plaintext, a, b);
+                } else if (selectedOperation === 'decrypt') {
+                    result = await decryptWord(plaintext, a, b);
+                } else {
+                    console.log("Invalid operation specified. Use encrypt or decrypt.");
+                    return;
+                }
+
+                document.getElementById('txt').innerHTML = 'Text: ' + plaintext;
+                document.getElementById('operasi-txt').innerHTML = 'Operasi: ' + selectedOperation;
+                document.getElementById('hasil').innerHTML = 'Hasil: ' + result.toUpperCase();
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
+
+    </script>
+</body>
+
+</html>
